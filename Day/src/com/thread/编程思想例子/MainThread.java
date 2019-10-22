@@ -1,6 +1,4 @@
-package com.thinkInJava.thread;
-
-import com.thinkInJava.thread.LiftoFF;
+package com.thread.编程思想例子;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

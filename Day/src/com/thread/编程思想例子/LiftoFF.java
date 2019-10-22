@@ -1,4 +1,4 @@
-package com.thinkInJava.thread;
+package com.thread.编程思想例子;
 
 public class LiftoFF implements Runnable{
 

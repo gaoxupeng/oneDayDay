@@ -1,4 +1,4 @@
-package com.thinkInJava.thread;
+package com.thread.编程思想例子;
 
 public class SelManaged implements Runnable{
     private int countDown = 5;
