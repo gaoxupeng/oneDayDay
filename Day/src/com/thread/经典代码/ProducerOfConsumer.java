@@ -1,6 +1,9 @@
 package com.thread.经典代码;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class ProducerOfConsumer<T> {
@@ -10,6 +13,9 @@ public class ProducerOfConsumer<T> {
 
 
     public synchronized void put(T t) {
+        List<String> list = new ArrayList<>();
+        Collections.synchronizedList(list);
+
         while(lists.size() == MAX) { //想想为什么用while而不是用if？
             try {
                 this.wait(); //effective java
