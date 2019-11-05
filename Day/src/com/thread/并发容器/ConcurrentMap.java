@@ -26,7 +26,9 @@ public class ConcurrentMap {
                 latch.countDown();
             });
         }
-
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            System.out.println("key = " + entry.getKey() + ", value = " + entry.getValue());
+        }
         Arrays.asList(threads).forEach(thread->thread.start());
         try {
             latch.await();
