@@ -1,6 +1,9 @@
 package com.thread.并发容器;
 
-import java.util.Arrays;
+/**
+ * 与直接常见线程相比，使用线程池开销小，速度快
+ */
+
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.*;
