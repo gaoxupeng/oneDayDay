@@ -6,44 +6,57 @@ import java.util.concurrent.*;
  * 使用多线程来进行求和
  */
 public class ThreadCount {
+    int value = 0;
 
-    private  int count = 0;
-
-    public static void main(String[] args) {
-
-        System.out.println(getLittleCount(1,10));
-        System.out.println(getCound(100,8));
+    ThreadCount(int value) {
+        this.value = value;
     }
 
-    public class workTask implements Callable{
+    public static class MultiSum implements Runnable {
+        private ThreadCount sum;
+        private int fromInt;
+        private int toInt;
+        private int threadNo;
+
+        public MultiSum(ThreadCount sum, int fromInt, int toInt, int threadNo) {
+            this.sum = sum;
+            this.fromInt = fromInt;
+            this.toInt = toInt;
+            this.threadNo = threadNo;
+
+        }
 
         @Override
-        public Object call() throws Exception {
-            return null;
+        public void run() {
+            long current = System.currentTimeMillis();
+            for (int i = fromInt; i <= toInt; i++) {
+                this.sum.value += i;
+            }
+            current = System.currentTimeMillis() - current;
+            System.out.println("Thread." + threadNo + " executes sum from "
+                    + fromInt + " to " + toInt + " in " + current
+                    + " milseconds. Sum is " + sum.value);
         }
     }
 
-    public static  int getCound(int num,int threadNum){
-
-        if (num == 0 && threadNum ==0){
-            return 0;
+    public static void main(String[] args) throws InterruptedException {
+        Integer toMax = 20000; // 对从1到20,000进行加和
+        Integer sumInteger = 0;
+        int threads = 8; // 计算线程数
+        // 每个线程计算一段连续的加和，并将加和结果保存在数组中。
+        ThreadCount[] subSum = new ThreadCount[threads];
+        for (int i = 0; i < threads; i++) {
+            subSum[i] = new ThreadCount(0);
         }
-        double array = num / threadNum;
-        ExecutorService executorService = Executors.newFixedThreadPool(threadNum);
-        //FutureTask futureTask = new FutureTask(thread);
-        executorService.execute(()->{
-        });
-        return  0 ;
-    }
-
-    public static  int getLittleCount(int leftNum,int reightNum){
-
-        int count = 0;
-        int forNum = reightNum-leftNum;
-        for (int i=0;i<forNum+1;i++){
-            count = count + leftNum+i;
+        for (int i = 0; i < threads; i++) {
+            int fromInt = toMax * i / threads + 1; // 边界条件
+            int toInt = toMax * (i + 1) / threads; // 边界条件
+            new Thread(new MultiSum(subSum[i], fromInt, toInt, i)).start();
         }
-        return count;
+        Thread.sleep(20);
+        for (int i = 0; i < threads; i++) {
+            sumInteger += subSum[i].value;
+        }
+        System.out.println("The sum is :" + sumInteger);
     }
-
 }

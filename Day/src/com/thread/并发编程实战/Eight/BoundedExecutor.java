@@ -24,7 +24,7 @@ public class BoundedExecutor {
     public BoundedExecutor(Executor executor, int bound) {
         this.executor = executor;
         this.semaphore = new Semaphore(bound);
-        System.identityHashCode()
+        //System.identityHashCode()
     }
 
     public void submitTask(final Runnable commad) throws InterruptedException{
