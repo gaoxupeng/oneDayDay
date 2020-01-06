@@ -1,4 +1,4 @@
-package thread.经典代码;
+package com.thread.经典代码;
 
 import java.util.concurrent.*;
 

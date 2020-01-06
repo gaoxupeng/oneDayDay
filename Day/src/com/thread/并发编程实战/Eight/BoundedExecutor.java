@@ -1,4 +1,4 @@
-package thread.并发编程实战.Eight;
+package com.thread.并发编程实战.Eight;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Semaphore;

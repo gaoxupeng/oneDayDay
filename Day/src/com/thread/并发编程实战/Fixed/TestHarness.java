@@ -1,4 +1,4 @@
-package thread.并发编程实战.Fixed;
+package com.thread.并发编程实战.Fixed;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
