@@ -1,73 +1,67 @@
 package com.thread.经典代码;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+
+/**
+ * 搞懂一些关键词的作用
+ * 当有任务，及时消费
+ * @param <T>
+ */
 
 public class ProducerOfConsumer<T> {
-    final private LinkedList<T> lists = new LinkedList<>();
-    final private int MAX = 10; //最多10个元素
-    private int count = 0;
 
+    final private Queue<T> linkedList = new LinkedList<>();  //工作队列
+    final private int Max  = 10;   //工作队列中最大值
+    public int count = 0;
 
-    public synchronized void put(T t) {
-        List<String> list = new ArrayList<>();
-        Collections.synchronizedList(list);
-
-        while(lists.size() == MAX) { //想想为什么用while而不是用if？
-            try {
-                this.wait(); //effective java
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        lists.add(t);
-        ++count;
-        this.notifyAll(); //通知消费者线程进行消费
-    }
-
-    public synchronized T get() {
-        T t = null;
-        while(lists.size() == 0) {
+    //生产代码
+    public synchronized void put(T t){
+        while (linkedList.size()==Max){
             try {
                 this.wait();
-            } catch (InterruptedException e) {
+            }catch (Exception e){
                 e.printStackTrace();
             }
         }
-        t = lists.removeFirst();
-        count --;
-        this.notifyAll(); //通知生产者进行生产
-        return t;
+        linkedList.add(t);
+        System.out.println("此时工作队列中有:"+linkedList.size()+"条");
+        ++count;
+        this.notifyAll();
     }
 
-    public static void main(String[] args) {
-        ProducerOfConsumer<String> c = new ProducerOfConsumer<>();
-        //启动消费者线程
-        for(int i=0; i<10; i++) {
-            new Thread(()->{
-                for(int j=0; j<5; j++) {
-                    System.out.println(c.get());
-                }
-            }, "c" + i).start();
+    //消费代码
+    public synchronized T get(){
+        T t = null;
+        while (linkedList.size()==0){
+            try {
+                this.wait();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
-
-        try {
-            TimeUnit.SECONDS.sleep(2);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        t = linkedList.poll();
+        System.out.println("消费一条，此时工作队列中有:"+linkedList.size()+"条");
+        this.notifyAll();
+        return t;
+    }
+    public static void main(String[] args) {
+        ProducerOfConsumer producerOfConsumer = new ProducerOfConsumer();
+        //启动消费者线程
+        for (int i = 0; i <10; i++) {
+            new Thread(()->{
+                for (int j = 0; j < 5; j++) {
+                    producerOfConsumer.get();
+                }
+            }).start();
         }
 
         //启动生产者线程
-        for(int i=0; i<2; i++) {
+        for (int i = 0; i < 2; i++) {
             new Thread(()->{
-                for(int j=0; j<25; j++) {
-                    c.put(Thread.currentThread().getName() + " " + j);
+                for (int j = 0; j < 25; j++) {
+                    producerOfConsumer.put(j);
                 }
-            }, "p" + i).start();
+            }).start();
         }
     }
 }
